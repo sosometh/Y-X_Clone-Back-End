@@ -1,13 +1,13 @@
 const express =require('express')
 const mongoose = require('mongoose')
-const cors = require('cors')
+
 
 // port d'écoute
 const port = 4000
 
 // création de l'app express
 const app = express()
-app.use(cors)
+
 app.use(express.json())
 // création du router
 const router = express.Router()
