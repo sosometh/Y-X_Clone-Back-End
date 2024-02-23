@@ -1,5 +1,6 @@
 const User = require('../models/user.model')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 // Permet d'enregistrer un utilisateur
 exports.signup = (req, res) => {
@@ -18,4 +19,23 @@ exports.signup = (req, res) => {
                 .catch(error => res.status(400).send({ error }))
         })
         .catch(error => res.status(500).send({ error }))
+}
+
+// Permet d'avoir un token de connexion
+exports.signin = (req,res) => {
+    User.findOne({email: req.body.email})
+        .then(user => {
+            if(!user) {
+                return res.status(401).send({message: "no account"})
+            }
+            bcrypt.compare(req.body.password, user.password)
+                .then(valid => {
+                    if(!valid) {
+                        return res.status(401).send({message: "invalid user"})
+                    }
+                    res.status(200).send({userId: user.id})
+                })
+                .catch(error => res.status(500).send({error}))
+        })
+        .catch(error => res.status(500).send({error}))
 }

@@ -8,7 +8,9 @@ router.get('/', (req,res) => {
     res.send('this is users route')
 })
 
-// route --> ajouter un user
+// Ajouter un user
 router.post('/signup', userCrtl.signup)
+// Obtenir un token de connexion
+router.post('/signin', userCrtl.signin)
 
 module.exports = router
