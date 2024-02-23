@@ -22,20 +22,27 @@ exports.signup = (req, res) => {
 }
 
 // Permet d'avoir un token de connexion
-exports.signin = (req,res) => {
-    User.findOne({email: req.body.email})
+exports.signin = (req, res) => {
+    User.findOne({ email: req.body.email })
         .then(user => {
-            if(!user) {
-                return res.status(401).send({message: "no account"})
+            if (!user) {
+                return res.status(401).send({ message: "no account" })
             }
             bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
-                    if(!valid) {
-                        return res.status(401).send({message: "invalid user"})
+                    if (!valid) {
+                        return res.status(401).send({ message: "invalid user" })
                     }
-                    res.status(200).send({userId: user.id})
+                    res.status(200).send({
+                        userId: user._id,
+                        token: jwt.sign(
+                            { userId: user._id },
+                            'todoGenerateKey',
+                            { expiresIn: '24h' }
+                        )
+                    })
                 })
-                .catch(error => res.status(500).send({error}))
+                .catch(error => res.status(500).send({ error }))
         })
-        .catch(error => res.status(500).send({error}))
+        .catch(error => res.status(500).send({ error }))
 }
